@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [[ $(git rev-parse --abbrev-ref HEAD) == "develop" ]]; then 
+  ls
+
+  . ./environments/dev.sh
+
+  export FOO="bar"
+
+  printenv
+elif [[ $(git rev-parse --abbrev-ref HEAD) == "master" ]]; then
+  source environments/master
+fi
