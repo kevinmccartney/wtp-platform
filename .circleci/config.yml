@@ -92,28 +92,28 @@ workflows:
                 - master
           requires:
             - install
-      # - build:
-      #     context: WTP_ENV_PROD
-      #     name: build_prod
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-      #     requires:
-      #       - install
+      - build:
+          context: WTP_ENV_PROD
+          name: build_prod
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - install
       - test:
           context: WTP_ENV_DEV
           requires:
             - install
-      # - deploy:
-      #     name: deploy_prod
-      #     requires:
-      #       - build_prod
-      #       - test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
+      - deploy:
+          name: deploy_prod
+          requires:
+            - build_prod
+            - test
+          filters:
+            branches:
+              only:
+                - master
       - deploy:
           context: aws-credentials
           name: deploy_dev
