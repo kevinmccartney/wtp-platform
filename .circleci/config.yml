@@ -104,10 +104,10 @@ workflows:
       #           - master
       #     requires:
       #       - install
-      # - test:
-      #     context: WTP_ENV_DEV
-      #     requires:
-      #       - install
+      - test:
+          context: WTP_ENV_DEV
+          requires:
+            - install
       # - deploy:
       #     name: deploy_prod
       #     requires:
