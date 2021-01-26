@@ -22,7 +22,7 @@ jobs:
       - run:
           name: "print working dir"
           command: "pwd"
-      Download and cache dependencies
+      # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
