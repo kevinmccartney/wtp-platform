@@ -72,6 +72,9 @@ jobs:
           at: /tmp/we-the-party/projects/web
       - run: sudo apt-get update && sudo apt-get install python3-pip
       - run: sudo pip3 install awscli
+      - run:
+          name: "list files"
+          command: "ls -la"
       # `deploy` step: identical to a `run` step, but uses only one container:
       # /docs/2.0/configuration-reference/#deploy
       - deploy:
