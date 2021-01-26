@@ -72,8 +72,7 @@ jobs:
 workflows:
   ci_cd_harness:
     jobs:
-      - list-files
-      # - install
+      - install
       # - build:
       #     context: WTP_ENV_DEV
       #     name: build_dev
