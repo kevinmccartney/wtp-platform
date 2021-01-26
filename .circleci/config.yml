@@ -14,8 +14,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: "change working dir"
-        command: "cd projects/web"
+          name: "change working dir"
+          command: "cd projects/web"
       - run:
           name: "list files"
           command: "ls -la"
