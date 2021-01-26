@@ -1,14 +1,18 @@
+locals {
+  s3_bucket_name = var.environment == "prod" ? "wethe.party" : "${var.environment}.wethe.party"
+}
+
 data "aws_acm_certificate" "cert" {
-  domain   = "canimunch.com"
+  domain   = "wethe.party"
   statuses = ["ISSUED"]
 }
 
 data "aws_route53_zone" "route_zone" {
-  name = "canimunch.com"
+  name = "wethe.party"
 }
 
 resource "aws_s3_bucket" "web_dist" {
-  bucket = var.environment == "prod" ? "canimunch.com" : "${var.environment}.canimunch.com"
+  bucket = var.environment == "prod" ? "wethe.party" : "${var.environment}.wethe.party"
   acl    = "public-read"
 
   website {
@@ -17,10 +21,33 @@ resource "aws_s3_bucket" "web_dist" {
   }
 }
 
+resource "aws_s3_bucket_policy" "dist_bucket" {
+  bucket = aws_s3_bucket.web_dist.id
+  
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${local.s3_bucket_name}/*"
+            ]
+        }
+    ]
+}  
+POLICY
+}
+
 resource "aws_route53_record" "cname_route_record" {
   count = var.environment == "prod" ? 0 : 1
   zone_id = data.aws_route53_zone.route_zone.zone_id
-  name    = var.environment == "prod" ? "canimunch.com" : "${var.environment}.canimunch.com"
+  name    = local.s3_bucket_name
   type    = "CNAME"
   ttl     = "300"
   records = [aws_cloudfront_distribution.s3_distribution.domain_name]
@@ -30,7 +57,7 @@ resource "aws_route53_record" "alias_route_record" {
   count = var.environment == "prod" ? 1 : 0
 
   zone_id = data.aws_route53_zone.route_zone.zone_id
-  name    = "canimunch.com"
+  name    = "wethe.party"
   type    = "A"
 
   alias {
@@ -43,7 +70,7 @@ resource "aws_route53_record" "alias_route_record" {
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.web_dist.website_endpoint
-    origin_id   = "cim-web-${var.environment}"
+    origin_id   = "wtp-web-${var.environment}"
 
     custom_origin_config {
       http_port                = 80
@@ -63,12 +90,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   is_ipv6_enabled     = true
   comment             = "Managed by Terraform"
 
-  aliases = [var.environment == "prod" ? "canimunch.com" : "${var.environment}.canimunch.com"]
+  aliases = [var.environment == "prod" ? "wethe.party" : "${var.environment}.wethe.party"]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "cim-web-${var.environment}"
+    target_origin_id = "wtp-web-${var.environment}"
 
     forwarded_values {
       query_string = false

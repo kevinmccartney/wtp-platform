@@ -4,66 +4,79 @@
 #
 version: 2.1
 executors:
-  node_image:
+  web_builder_image:
     docker:
-      - image: circleci/node:10.18.0-browsers
-    working_directory: /tmp/we-the-party
+      - image: circleci/node:14.15.4-browsers
+    working_directory: /tmp/wtp-platform
 jobs:
   install:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-      - run: npm install
+      - run: cd projects/web && npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
       - persist_to_workspace:
-          root: ./
+          root: projects/web
           paths:
             - node_modules
+
   build:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party
-      - run: npm run build --production
+          at: /tmp/wtp-platform/projects/web
+      - run: cd projects/web && npm run build
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
       - persist_to_workspace:
-          root: ./
+          root: projects/web
           paths:
-            - dist
+            - build
   test:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party
-      - run: npm run test
+          at: /tmp/wtp-platform/projects/web
+      - run: cd projects/web && npm run test
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
   deploy:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party
+          at: /tmp/wtp-platform/projects/web
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
       - run: sudo apt-get update && sudo apt-get install python3-pip
       - run: sudo pip3 install awscli
+      - run:
+          name: "list files"
+          command: "ls -la projects/web"
       # `deploy` step: identical to a `run` step, but uses only one container:
       # /docs/2.0/configuration-reference/#deploy
       - deploy:
           name: deploy to AWS
           command: |
             if [ "${CIRCLE_BRANCH}" = "master" ]; then
-              aws s3 sync ./dist/we-the-party \
+              aws s3 sync ./projects/web/build \
               s3://wethe.party --delete
             else
-              aws s3 sync ./dist/we-the-party \
+              aws s3 sync ./projects/web/build \
               s3://dev.wethe.party --delete
             fi
 workflows:
@@ -102,6 +115,7 @@ workflows:
               only:
                 - master
       - deploy:
+          context: aws-credentials
           name: deploy_dev
           requires:
             - build_dev
