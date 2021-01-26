@@ -12,34 +12,34 @@ jobs:
   install:
     executor: web_builder_image
     steps:
-      - checkout
+      # - checkout
       # - run:
       #     name: "change working dir"
       #     command: "cd projects/web"
-      # - run:
-      #     name: "list files"
-      #     command: "ls -la"
+      - run:
+          name: "list files"
+          command: "ls -la"
       # - run:
       #     name: "print working dir"
       #     command: "pwd"
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: cd projects/web && npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
-      - run:
-          name: "list files"
-          command: "ls projects/web -la"
-      - persist_to_workspace:
-          root: ./projects/web
-          paths:
-            - node_modules
+      # - restore_cache:
+      #     keys:
+      #       - v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
+      #       # fallback to using the latest cache if no exact match is found
+      #       - v1-dependencies-
+      # - run: cd projects/web && npm install
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
+      # - run:
+      #     name: "list files"
+      #     command: "ls projects/web -la"
+      # - persist_to_workspace:
+      #     root: ./projects/web
+      #     paths:
+      #       - node_modules
 
   # build:
   #   executor: node_image
