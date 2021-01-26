@@ -115,6 +115,7 @@ workflows:
       #         only:
       #           - master
       - deploy:
+          context: aws-credentials
           name: deploy_dev
           requires:
             - build_dev
