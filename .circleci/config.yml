@@ -106,6 +106,7 @@ workflows:
           requires:
             - install
       - deploy:
+          context: aws-credentials
           name: deploy_prod
           requires:
             - build_prod
