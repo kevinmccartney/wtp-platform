@@ -41,17 +41,17 @@ jobs:
           paths:
             - node_modules
 
-  # build:
-  #   executor: node_image
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: /tmp/we-the-party
-  #     - run: npm run build --production
-  #     - persist_to_workspace:
-  #         root: ./
-  #         paths:
-  #           - dist
+  build:
+    executor: web_builder_image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/we-the-party
+      - run: cd projects/web && npm run build
+      - persist_to_workspace:
+          root: projects/web
+          paths:
+            - dist
   # test:
   #   executor: node_image
   #   steps:
