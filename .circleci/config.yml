@@ -16,6 +16,9 @@ jobs:
       - run:
           name: "list files"
           command: "ls -la"
+      - run:
+          name: "print working dir"
+          command: "pwd"
       # Download and cache dependencies
       - restore_cache:
           keys:
