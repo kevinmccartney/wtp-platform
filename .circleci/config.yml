@@ -64,26 +64,26 @@ jobs:
       - attach_workspace:
           at: /tmp/we-the-party/projects/web
       - run: cd projects/web && npm run test
-  # deploy:
-  #   executor: node_image
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: /tmp/we-the-party
-  #     - run: sudo apt-get update && sudo apt-get install python3-pip
-  #     - run: sudo pip3 install awscli
-  #     # `deploy` step: identical to a `run` step, but uses only one container:
-  #     # /docs/2.0/configuration-reference/#deploy
-  #     - deploy:
-  #         name: deploy to AWS
-  #         command: |
-  #           if [ "${CIRCLE_BRANCH}" = "master" ]; then
-  #             aws s3 sync ./dist/we-the-party \
-  #             s3://wethe.party --delete
-  #           else
-  #             aws s3 sync ./dist/we-the-party \
-  #             s3://dev.wethe.party --delete
-  #           fi
+  deploy:
+    executor: web_builder_image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/we-the-party/projects/web
+      - run: sudo apt-get update && sudo apt-get install python3-pip
+      - run: sudo pip3 install awscli
+      # `deploy` step: identical to a `run` step, but uses only one container:
+      # /docs/2.0/configuration-reference/#deploy
+      - deploy:
+          name: deploy to AWS
+          command: |
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+              aws s3 sync ./projects/web/build \
+              s3://wethe.party --delete
+            else
+              aws s3 sync ./projects/web/build \
+              s3://dev.wethe.party --delete
+            fi
 workflows:
   ci_cd_harness:
     jobs:
