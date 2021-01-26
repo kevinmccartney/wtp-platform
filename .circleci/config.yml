@@ -13,15 +13,6 @@ jobs:
     executor: web_builder_image
     steps:
       - checkout
-      - run:
-          name: "change working dir"
-          command: "cd projects/web"
-      - run:
-          name: "list files"
-          command: "ls -la"
-      - run:
-          name: "print working dir"
-          command: "pwd"
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -33,9 +24,6 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
-      - run:
-          name: "list files"
-          command: "ls projects/web -la"
       - persist_to_workspace:
           root: projects/web
           paths:
@@ -47,10 +35,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/wtp-platform/projects/web
+      - run: cd projects/web && npm run build
       - run:
           name: "list contents"
-          command: "cd projects/web/node_modules/.bin && ls -la"
-      - run: cd projects/web && npm run build
+          command: "cd projects/web && ls -la"
       - persist_to_workspace:
           root: projects/web
           paths:
@@ -61,15 +49,19 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/wtp-platform/projects/web
-      - attach_workspace:
-          at: /tmp/we-the-party/projects/web
       - run: cd projects/web && npm run test
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
   deploy:
     executor: web_builder_image
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/we-the-party/projects/web
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
       - run: sudo apt-get update && sudo apt-get install python3-pip
       - run: sudo pip3 install awscli
       - run:
