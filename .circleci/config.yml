@@ -119,12 +119,12 @@ workflows:
       #       branches:
       #         only:
       #           - master
-      # - deploy:
-      #     name: deploy_dev
-      #     requires:
-      #       - build_dev
-      #       - test
-      #     filters:
-      #       branches:
-      #         only:
-      #           - develop
+      - deploy:
+          name: deploy_dev
+          requires:
+            - build_dev
+            - test
+          filters:
+            branches:
+              only:
+                - develop
