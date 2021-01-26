@@ -16,14 +16,14 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "/projects/web/package.json" }}
+            - v1-dependencies-{{ checksum "/projects/web/package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "projects/web/package.json" }}
+          key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
       - persist_to_workspace:
           root: ./
           paths:
@@ -70,43 +70,46 @@ workflows:
   ci_cd_harness:
     jobs:
       - install
-      - build:
-          context: WTP_ENV_DEV
-          name: build_dev
-          filters:
-            branches:
-              ignore:
-                - master
-          requires:
-            - install
-      - build:
-          context: WTP_ENV_PROD
-          name: build_prod
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - install
-      - test:
-          context: WTP_ENV_DEV
-          requires:
-            - install
-      - deploy:
-          name: deploy_prod
-          requires:
-            - build_prod
-            - test
-          filters:
-            branches:
-              only:
-                - master
-      - deploy:
-          name: deploy_dev
-          requires:
-            - build_dev
-            - test
-          filters:
-            branches:
-              only:
-                - develop
+      - run:
+          name: "list files"
+          command: "ls -la"
+      # - build:
+      #     context: WTP_ENV_DEV
+      #     name: build_dev
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - master
+      #     requires:
+      #       - install
+      # - build:
+      #     context: WTP_ENV_PROD
+      #     name: build_prod
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #     requires:
+      #       - install
+      # - test:
+      #     context: WTP_ENV_DEV
+      #     requires:
+      #       - install
+      # - deploy:
+      #     name: deploy_prod
+      #     requires:
+      #       - build_prod
+      #       - test
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      # - deploy:
+      #     name: deploy_dev
+      #     requires:
+      #       - build_dev
+      #       - test
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
