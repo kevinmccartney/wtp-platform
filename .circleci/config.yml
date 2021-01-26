@@ -4,10 +4,10 @@
 #
 version: 2.1
 executors:
-  node_image:
+  web_builder_image:
     docker:
-      - image: circleci/node:10.18.0-browsers
-    working_directory: /tmp/projects/web
+      - image: circleci/node:14.15.4-browsers
+    working_directory: /tmp
 jobs:
   install:
     executor: node_image
