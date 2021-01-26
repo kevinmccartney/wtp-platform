@@ -83,15 +83,15 @@ workflows:
   ci_cd_harness:
     jobs:
       - install
-      # - build:
-      #     context: WTP_ENV_DEV
-      #     name: build_dev
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - master
-      #     requires:
-      #       - install
+      - build:
+          context: WTP_ENV_DEV
+          name: build_dev
+          filters:
+            branches:
+              ignore:
+                - master
+          requires:
+            - install
       # - build:
       #     context: WTP_ENV_PROD
       #     name: build_prod
