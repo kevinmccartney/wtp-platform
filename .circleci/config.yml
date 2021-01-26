@@ -60,7 +60,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party
+          at: /tmp/we-the-party/projects/web
       - run: cd projects/web && npm run test
   # deploy:
   #   executor: node_image
@@ -108,6 +108,7 @@ workflows:
           context: WTP_ENV_DEV
           requires:
             - install
+            - build
       # - deploy:
       #     name: deploy_prod
       #     requires:
