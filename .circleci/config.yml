@@ -10,7 +10,7 @@ executors:
     working_directory: /tmp
 jobs:
   install:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       # - run:
