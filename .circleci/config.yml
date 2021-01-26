@@ -9,31 +9,28 @@ executors:
       - image: circleci/node:10.18.0-browsers
     working_directory: /tmp/we-the-party/projects/web
 jobs:
-  list-files:
+  install:
     executor: node_image
     steps:
+      - checkout
       - run:
           name: "list files"
           command: "ls -la"
-  # install:
-  #   executor: node_image
-  #   steps:
-  #     - checkout
-  #     # Download and cache dependencies
-  #     - restore_cache:
-  #         keys:
-  #           - v1-dependencies-{{ checksum "/projects/web/package-lock.json" }}
-  #           # fallback to using the latest cache if no exact match is found
-  #           - v1-dependencies-
-  #     - run: npm install
-  #     - save_cache:
-  #         paths:
-  #           - node_modules
-  #         key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
-  #     - persist_to_workspace:
-  #         root: ./
-  #         paths:
-  #           - node_modules
+      # Download and cache dependencies
+      # - restore_cache:
+      #     keys:
+      #       - v1-dependencies-{{ checksum "/projects/web/package-lock.json" }}
+      #       # fallback to using the latest cache if no exact match is found
+      #       - v1-dependencies-
+      # - run: npm install
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-dependencies-{{ checksum "projects/web/package-lock.json" }}
+      # - persist_to_workspace:
+      #     root: ./
+      #     paths:
+      #       - node_modules
   # build:
   #   executor: node_image
   #   steps:
