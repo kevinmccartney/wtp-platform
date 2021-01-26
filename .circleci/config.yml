@@ -108,7 +108,6 @@ workflows:
           context: WTP_ENV_DEV
           requires:
             - install
-            - build
       # - deploy:
       #     name: deploy_prod
       #     requires:
