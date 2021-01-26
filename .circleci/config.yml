@@ -58,7 +58,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party/projects/web
+          at: /tmp/wtp-platform/projects/web
       - run:
           name: "list contents"
           command: "cd projects/web && ls -la"
