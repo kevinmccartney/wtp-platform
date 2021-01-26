@@ -49,7 +49,7 @@ jobs:
           at: /tmp/wtp-platform/projects/web
       - run:
           name: "list contents"
-          command: "cd projects/web && ls -la"
+          command: "cd projects/web/node_modules/.bin && ls -la"
       # - run: cd projects/web && npm run build
       # - persist_to_workspace:
       #     root: projects/web
