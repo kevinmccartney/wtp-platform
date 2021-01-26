@@ -56,7 +56,7 @@ jobs:
           paths:
             - build
   test:
-    executor: node_image
+    executor: web_builder_image
     steps:
       - checkout
       - attach_workspace:
