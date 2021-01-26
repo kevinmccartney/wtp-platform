@@ -46,12 +46,15 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/we-the-party
-      - run: cd projects/web && npm run build
-      - persist_to_workspace:
-          root: projects/web
-          paths:
-            - dist
+          at: /tmp/wtp-platform/projects/web
+      - run:
+          name: "list contents"
+          command: "cd projects/web && ls -la"
+      # - run: cd projects/web && npm run build
+      # - persist_to_workspace:
+      #     root: projects/web
+      #     paths:
+      #       - dist
   # test:
   #   executor: node_image
   #   steps:
