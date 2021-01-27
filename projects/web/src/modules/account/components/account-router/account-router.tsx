@@ -1,10 +1,10 @@
 import React from 'react';
-import { Route, useRouteMatch, Switch } from 'react-router';
+import { Route, useRouteMatch, Switch, Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import { IStoreState } from '@modules/core/models/store-state.interface';
 import { LoginView, CreateAccountView, ProfileView } from '../../views';
 import { ProtectedRoute } from '../../../shared';
 import { NotFound } from '../../../shared/components';
+import { IStoreState } from '../../../core/models/store-state.interface';
 
 export const AccountRouterComponent: React.FC<{
   authenticated: boolean;
@@ -20,7 +20,8 @@ export const AccountRouterComponent: React.FC<{
         path={`${path}/profile`}
         component={ProfileView}
       />
-      <Route component={NotFound} />
+      <Route path="/not-found" component={NotFound} />
+      <Redirect to="/not-found" />
     </Switch>
   );
 };

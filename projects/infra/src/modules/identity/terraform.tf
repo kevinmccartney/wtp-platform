@@ -1,30 +1,30 @@
 locals {
   environments = tomap({
     "prod" = {
-      "name" = "wtp_users_prod"
+      "name"        = "wtp_users_prod"
       "external_id" = var.sns_external_id_prod
-      "env": "prod"
     },
-    "dev"  = {
-      "name" = "wtp_users_dev"
+    "dev" = {
+      "name"        = "wtp_users_dev"
       "external_id" = var.sns_external_id_dev
-      "env": "dev"
     },
   })
 }
 
 # Trust relationships policy document
-data "aws_iam_policy_document" "sns_policy" {
+data "aws_iam_policy_document" "sns_assume_role_policy" {
   for_each = local.environments
-  version = "2012-10-17"
+  version  = "2012-10-17"
 
   statement {
-    sid     = "wtp-${each.value.env}-sns-role"
+    sid = "wtp${title(each.key)}SnsRole"
 
-    actions = [
-      "sns:publish"
-    ]
-    resources = ["*"]
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
 
     condition {
       test     = "StringEquals"
@@ -35,12 +35,61 @@ data "aws_iam_policy_document" "sns_policy" {
   }
 }
 
+data "aws_iam_policy_document" "sns_role_policy" {
+  for_each = local.environments
+  version  = "2012-10-17"
+
+  statement {
+    sid = "wtp${title(each.key)}SnsRolePolicy"
+
+    actions = [
+      "sns:publish"
+    ]
+    resources = ["arn:aws:sns:::*"]
+  }
+}
+
+resource "aws_iam_policy" "sms_policy" {
+  for_each = local.environments
+
+  name        = "${each.value.name}-SMS-Policy"
+  path        = "/ServiceRole/"
+  description = "Policy for SNS SMS role"
+
+  policy = data.aws_iam_policy_document.sns_role_policy[each.key].json
+
+  tags = {
+    "project"     = "we-the-party",
+    "managed_by"  = "terraform"
+    "environment" = each.key
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "sms_role_policy_attachment" {
+  for_each = local.environments
+
+  role       = aws_iam_role.sms_role[each.key].name
+  policy_arn = aws_iam_policy.sms_policy[each.key].arn
+
+  tags = {
+    "project"     = "we-the-party",
+    "managed_by"  = "terraform"
+    "environment" = each.key
+  }
+}
+
 resource "aws_iam_role" "sms_role" {
   for_each = local.environments
-  
-  name = "${each.value.name}-SMS-Role"
-  path = "/service-role/"
-  assume_role_policy = data.aws_iam_policy_document.sns_policy[each.key].json
+
+  name               = "${each.value.name}-SMS-Role"
+  path               = "/ServiceRole/"
+  assume_role_policy = data.aws_iam_policy_document.sns_assume_role_policy[each.key].json
+
+  tags = {
+    "project"     = "we-the-party",
+    "managed_by"  = "terraform"
+    "environment" = each.key
+  }
 }
 
 # resource "aws_cognito_user_pool" "user_pool" {
@@ -124,7 +173,7 @@ resource "aws_iam_role" "sms_role" {
 
 
 #   tags = {
-#     "project"     = "can_i_munch",
+#     "project"     = "we-the-party",
 #     "managed_by"  = "terraform"
 #     "environment" = each.key
 #   }

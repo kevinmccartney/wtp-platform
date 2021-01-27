@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "web_dist" {
 
 resource "aws_s3_bucket_policy" "dist_bucket" {
   bucket = aws_s3_bucket.web_dist.id
-  
+
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -45,7 +45,7 @@ POLICY
 }
 
 resource "aws_route53_record" "cname_route_record" {
-  count = var.environment == "prod" ? 0 : 1
+  count   = var.environment == "prod" ? 0 : 1
   zone_id = data.aws_route53_zone.route_zone.zone_id
   name    = local.s3_bucket_name
   type    = "CNAME"
@@ -78,17 +78,17 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       origin_keepalive_timeout = 5
       origin_protocol_policy   = "http-only"
       origin_read_timeout      = 30
-      origin_ssl_protocols     = [
-          "TLSv1",
-          "TLSv1.1",
-          "TLSv1.2",
-        ]
+      origin_ssl_protocols = [
+        "TLSv1",
+        "TLSv1.1",
+        "TLSv1.2",
+      ]
     }
   }
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "Managed by Terraform"
+  enabled         = true
+  is_ipv6_enabled = true
+  comment         = "Managed by Terraform"
 
   aliases = [var.environment == "prod" ? "wethe.party" : "${var.environment}.wethe.party"]
 
@@ -120,8 +120,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   tags = {
-    "project" = "can-i-munch",
-    "managed_by" = "terraform"
+    "project"     = "can-i-munch",
+    "managed_by"  = "terraform"
     "environment" = var.environment
   }
 

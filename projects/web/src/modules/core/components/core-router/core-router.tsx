@@ -1,4 +1,4 @@
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 import React from 'react';
 import { connect } from 'react-redux';
 import { DashboardView } from '../../../dashboard/components';
@@ -30,7 +30,8 @@ export const CoreRouterComponent: React.FC<{
       path="/messaging"
       component={MessagingView}
     />
-    <Route component={NotFound} />
+    <Route path="/not-found" component={NotFound} />
+    <Redirect to="/not-found" />
   </Switch>
 );
 

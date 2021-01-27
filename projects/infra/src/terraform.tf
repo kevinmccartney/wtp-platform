@@ -13,8 +13,8 @@ data "terraform_remote_state" "state" {
 }
 
 provider "aws" {
-  version = "~> 2.8"
-  region = var.wtp_aws_region
+  version = "~> 3.0"
+  region  = var.wtp_aws_region
 }
 
 resource "aws_s3_bucket" "terraform_state" {
@@ -45,17 +45,14 @@ module "web_certs" {
   source = "./modules/cert"
 
   domain_names = tomap({
-    "apex"   = "wethe.party"
-    "api"    = "api.wethe.party",
+    "api"   = "api.wethe.party",
+    "apex"  = "wethe.party",
+    "admin" = "admin.wethe.party"
   })
 }
 
 module "identity" {
-  source = "./modules/identity"
-  sns_external_id_dev = var.wtp_sns_external_id_dev
+  source               = "./modules/identity"
+  sns_external_id_dev  = var.wtp_sns_external_id_dev
   sns_external_id_prod = var.wtp_sns_external_id_prod
 }
-
-# output "sms_role" {
-#   value = module.identity.sms_role
-# }
