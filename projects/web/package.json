@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.4.0",
+    "@craco/craco": "^6.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -10,10 +15,20 @@
     "@types/node": "^12.19.15",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
+    "@types/react-router-dom": "^5.1.7",
     "antd": "^4.11.2",
+    "aws-amplify": "^3.3.14",
+    "babel-plugin-import": "^1.13.3",
+    "connected-react-router": "^6.8.0",
+    "history": "^5.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
     "tailwindcss": "^2.0.2",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.4",
@@ -30,18 +45,12 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:help": "react-scripts build --help",
-    "tailwind:build": "tailwind build src/tailwind.css -o public/tailwind.css"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "tailwind:build": "tailwind build src/tailwind.css -o public/tailwind.css",
+    "prettier": "prettier --write src",
+    "eject": "react-scripts eject --help"
   },
   "browserslist": {
     "production": [
@@ -56,6 +65,8 @@
     ]
   },
   "devDependencies": {
+    "@types/react-redux": "^7.1.16",
+    "@types/react-router": "^5.1.11",
     "@typescript-eslint/parser": "^4.14.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.2.0",

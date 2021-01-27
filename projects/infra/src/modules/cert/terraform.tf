@@ -17,10 +17,6 @@ resource "aws_acm_certificate" "default" {
   options {
     certificate_transparency_logging_preference = "ENABLED"
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_route53_record" "validation" {
@@ -32,7 +28,6 @@ resource "aws_route53_record" "validation" {
   zone_id = aws_route53_zone.domain_routes.zone_id
   records = [aws_acm_certificate.default.domain_validation_options[count.index + 1].resource_record_value]
   ttl     = "60"
-  allow_overwrite = true
 }
 
 resource "aws_acm_certificate_validation" "default" {
@@ -41,4 +36,8 @@ resource "aws_acm_certificate_validation" "default" {
   certificate_arn         = aws_acm_certificate.default.arn
   
   validation_record_fqdns = [for validation in aws_route53_record.validation: validation.fqdn]
+
+  lifecycle {
+    ignore_changes = all
+  }
 }

@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { createBrowserHistory } from 'history';
+import { Provider } from 'react-redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware } from 'redux';
+import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
+import { createRootReducer } from './modules/core/store';
+import { CoreRouter } from './modules/core/components';
+import { AppShell } from './modules/core/components/app-shell/app-shell';
+import './amplify.config';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const history = createBrowserHistory();
+const store = createStore(
+  createRootReducer(history),
+  composeWithDevTools(applyMiddleware(routerMiddleware(history))),
+);
+
+export const App: React.FC = () => (
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <AppShell>
+        <CoreRouter />
+      </AppShell>
+    </ConnectedRouter>
+  </Provider>
+);
 
 export default App;

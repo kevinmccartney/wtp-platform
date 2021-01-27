@@ -1,0 +1,15 @@
+.main-menu-item {
+  color: rgba(255, 255, 255, 0.65) !important;
+  background-color: transparent !important;
+}
+
+.main-menu-item a {
+  color: rgba(255, 255, 255, 0.65) !important;
+  background-color: transparent !important;
+}
+
+.main-menu-item__active {
+  background-color: #1890ff !important;
+  color: #fff !important;
+  border-right: 0 !important;
+}

@@ -50,11 +50,11 @@ module "web_certs" {
   })
 }
 
-# module "identity" {
-#   source = "./modules/identity"
-#   external_id_dev = var.wtp_external_id_dev
-#   external_id_prod = var.wtp_external_id_prod
-# }
+module "identity" {
+  source = "./modules/identity"
+  sns_external_id_dev = var.wtp_sns_external_id_dev
+  sns_external_id_prod = var.wtp_sns_external_id_prod
+}
 
 # output "sms_role" {
 #   value = module.identity.sms_role
